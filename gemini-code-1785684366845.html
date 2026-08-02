@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D. WRITING PRACTICE (Q50 - Q58) - Ms Lê Hằng English</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================
+       1. GIAO DIỆN NỀN LOANG & HỌA TIẾT SVG GAMIFICATION
+       ========================================== */
+    :root {
+      --primary-purple: #8854C0;
+      --accent-yellow: #FDCB6E;
+      --accent-teal: #00C9A7;
+      --correct-green: #00D26A;
+      --wrong-red: #FF4757;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text-dark: #2D3436;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Quicksand', 'Nunito', sans-serif;
+      min-height: 100vh;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 10px;
+      position: relative;
+      overflow-x: hidden;
+      
+      /* Gradient chuyển màu loang mượt continuous */
+      background: linear-gradient(-45deg, #8854C0, #FDCB6E, #00C9A7, #FF7675, #6C5CE7);
+      background-size: 400% 400%;
+      animation: gradientSmooth 15s ease infinite;
+    }
+
+    @keyframes gradientSmooth {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Họa tiết SVG lơ lửng vui nhộn */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.28;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 100 100"><path fill="%23FFF" d="M25,10 L29,20 L40,20 L31,27 L34,38 L25,31 L16,38 L19,27 L10,20 L21,20 Z"/><circle cx="75" cy="25" r="7" fill="%23FFF"/><path fill="%23FFF" d="M70,75 C70,70 80,70 80,75 C85,75 85,85 80,85 C80,90 70,90 70,85 C65,85 65,75 70,75 Z"/><path fill="%23FFF" d="M20,70 Q25,60 30,70 T40,70 T30,80 T20,70 Z"/><path fill="%23FFF" d="M80,15 C82,10 88,10 90,15 C95,17 95,23 90,25 C88,30 82,30 80,25 C75,23 75,17 80,15 Z"/></svg>');
+      background-size: 140px 140px;
+      animation: floatPattern 22s linear infinite;
+    }
+
+    @keyframes floatPattern {
+      from { background-position: 0 0; }
+      to { background-position: 500px 1000px; }
+    }
+
+    /* ==========================================
+       2. BỐ CỤC CHÍNH (CONTAINER)
+       ========================================== */
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 820px;
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 25px 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.22), 0 0 0 8px rgba(255,255,255,0.45);
+      backdrop-filter: blur(12px);
+    }
+
+    .teacher-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .teacher-header h5 {
+      font-size: 0.95rem;
+      color: var(--primary-purple);
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: #E8D8F8;
+      display: inline-block;
+      padding: 5px 18px;
+      border-radius: 20px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+    }
+
+    .alert-banner {
+      background: #FFF9DB;
+      border: 3px dashed #FCC419;
+      border-radius: 18px;
+      padding: 14px 20px;
+      margin-bottom: 25px;
+      text-align: center;
+      color: #D9480F;
+      font-weight: 700;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .alert-banner .title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      display: block;
+      margin-bottom: 4px;
+      color: #E65100;
+    }
+
+    .alert-banner .highlight {
+      color: #D32F2F;
+      text-decoration: underline;
+      font-style: italic;
+    }
+
+    .progress-box {
+      margin-bottom: 25px;
+      background: #E9ECEF;
+      border-radius: 14px;
+      height: 20px;
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #CED4DA;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00C9A7, #00D26A);
+      transition: width 0.4s ease;
+    }
+
+    /* ==========================================
+       3. THẺ CÂU HỎI & NÚT LỰA CHỌN 3D
+       ========================================== */
+    .section-heading {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--primary-purple);
+      margin: 25px 0 15px 0;
+      padding: 12px 18px;
+      background: #F1F3F5;
+      border-radius: 16px;
+      border-left: 6px solid var(--primary-purple);
+      line-height: 1.5;
+    }
+
+    .question-card {
+      background: #FFFFFF;
+      border-radius: 22px;
+      padding: 22px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+      border: 2px solid #E9ECEF;
+      transition: transform 0.2s ease;
+    }
+
+    .question-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: #2D3436;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: #F8F9FA;
+      border: 2px solid #E9ECEF;
+      border-bottom: 5px solid #CED4DA;
+      border-radius: 18px;
+      padding: 14px 20px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #495057;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: inherit;
+    }
+
+    .option-btn:hover:not(.disabled) {
+      transform: scale(1.01) translateY(-2px);
+      border-color: #B2BEC3;
+      background: #FFFFFF;
+    }
+
+    .option-btn:active:not(.disabled) {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    .option-btn.correct {
+      background-color: #D4EDDA !important;
+      border-color: var(--correct-green) !important;
+      border-bottom-color: #27AE60 !important;
+      color: #155724 !important;
+    }
+
+    .option-btn.wrong {
+      background-color: #F8D7DA !important;
+      border-color: var(--wrong-red) !important;
+      border-bottom-color: #C0392B !important;
+      color: #721C24 !important;
+      animation: shake 0.4s ease;
+    }
+
+    .option-btn.disabled {
+      cursor: default;
+      opacity: 0.9;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* ==========================================
+       4. KHUNG GIẢI THÍCH CHI TIẾT 4 BƯỚC
+       ========================================== */
+    .explanation-box {
+      display: none;
+      margin-top: 18px;
+      background: #F8F9FA;
+      border: 2px dashed var(--primary-purple);
+      border-left: 6px solid var(--primary-purple);
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-size: 0.93rem;
+      line-height: 1.65;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .explanation-box .exp-title {
+      font-weight: 800;
+      color: var(--primary-purple);
+      font-size: 1rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .explanation-box .step {
+      margin-bottom: 8px;
+    }
+
+    .explanation-box ul {
+      margin-left: 22px;
+      margin-bottom: 8px;
+    }
+
+    .explanation-box ul li {
+      margin-bottom: 3px;
+    }
+
+    .explanation-box .highlight-green {
+      color: #27AE60;
+      font-weight: 700;
+    }
+
+    /* ==========================================
+       5. NÚT NỘP BÀI VÀ POPUP KẾT QUẢ
+       ========================================== */
+    .submit-container {
+      text-align: center;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(180deg, #00C9A7 0%, #00B894 100%);
+      color: white;
+      border: none;
+      border-bottom: 6px solid #008F68;
+      border-radius: 22px;
+      padding: 16px 50px;
+      font-size: 1.25rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0,201,167,0.35);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(0,201,167,0.45);
+    }
+
+    .submit-btn:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 26px;
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-score {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--primary-purple);
+      margin: 15px 0;
+    }
+
+    .modal-feedback {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #2D3436;
+      margin-bottom: 25px;
+      background: #F8F9FA;
+      padding: 16px;
+      border-radius: 18px;
+      border: 2px dashed #B2BEC3;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: var(--primary-purple);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <div class="teacher-header">
+      <h5>Giáo viên tạo: Ms Lê Hằng English</h5>
+    </div>
+
+    <div class="alert-banner">
+      <span class="title">⚠️ LỜI NHẮC CỰC KỲ QUAN TRỌNG ⚠️</span>
+      Chỉ có đọc kỹ giải thích ngay sau mỗi câu, sau đó ghi lại từ vựng/cấu trúc mới vào vở để học thì mới thực sự giỏi lên.<br>
+      Làm cho xong mà không đọc giải thích hay đọc qua loa không ghi chép thì chỉ tốn thời gian vô ích!<br>
+      <span class="highlight">* Kéo tới đâu, làm tới đó! *</span>
+    </div>
+
+    <div class="progress-box">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="submit-container">
+      <button class="submit-btn" onclick="submitQuiz()">NỘP BÀI KIỂM TRA 🚀</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="result-modal">
+    <div class="modal-content">
+      <h2 style="color: var(--primary-purple);">🎉 KẾT QUẢ BÀI THI 🎉</h2>
+      <div class="modal-score" id="modal-score-text">0 / 0</div>
+      <div class="modal-feedback" id="modal-feedback-text"></div>
+      <button class="close-btn" onclick="closeModal()">Xem lại đáp án chi tiết</button>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================
+       1. CƠ SỞ DỮ LIỆU ĐỀ BÀI (GIỮ NGUYÊN THỨ TỰ)
+       ========================================== */
+    const quizData = [
+      // ----- PART 1: REWRITE SENTENCES (Q50 - Q54) -----
+      {
+        id: 50,
+        section: "Rewrite the following sentences without changing the meaning",
+        question: "Question 50. Mary is interested in reading comics after school.<br>➔ Mary loves _______.",
+        options: [
+          { letter: "A", text: "reading comics after school" },
+          { letter: "B", text: "to reading comics after school" },
+          { letter: "C", text: "read comics after school" },
+          { letter: "D", text: "in reading comics after school" }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu gốc: 'Mary thích đọc truyện tranh sau giờ học.'",
+          step2: [
+            "A. reading comics after school (Đúng ngữ pháp cấu trúc love + V-ing).",
+            "B. to reading... (Sai cấu trúc, không dùng 'to V-ing').",
+            "C. read... (Sai dạng động từ nguyên thể đứng sau love).",
+            "D. in reading... (Thừa giới từ 'in', 'love' không đi với 'in')."
+          ],
+          step3: "Tại sao chọn A? Cấu trúc thể hiện sự yêu thích: 'be interested in + V-ing' = 'love + V-ing/to-V'. Ở đây 'reading comics after school' giữ nguyên dạng V-ing chuẩn xác.",
+          step4: "Loại B sai cú pháp; loại C sai dạng động từ nguyên thể; loại D dùng thừa giới từ 'in'."
+        }
+      },
+      {
+        id: 51,
+        section: "Rewrite the following sentences without changing the meaning",
+        question: "Question 51. They like doing something useful, so they do volunteer work.<br>➔ Because _______.",
+        options: [
+          { letter: "A", text: "they like doing something useful, they do volunteer work" },
+          { letter: "B", text: "they like doing something useful, so they do volunteer work" },
+          { letter: "C", text: "they do volunteer work, they like doing something useful" },
+          { letter: "D", text: "they like doing something useful, they will do volunteer work" }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu gốc: 'Họ thích làm điều gì đó có ích, vì vậy họ làm công việc thiện nguyện.' (Nguyên nhân: thích làm điều có ích -> Kết quả: làm tình nguyện).",
+          step2: [
+            "A. they like doing something useful, they do volunteer work (Vì họ thích làm điều có ích, họ làm tình nguyện -> Đúng ngữ pháp và nghĩa).",
+            "B. ...because... so... (Sai ngữ pháp vì trong tiếng Anh không dùng cả 'because' và 'so' trong cùng một câu).",
+            "C. ...do volunteer work, they like... (Ngược vế nguyên nhân - kết quả rất phi lý).",
+            "D. ...they will do... (Sai thì động từ)."
+          ],
+          step3: "Tại sao chọn A? Viết lại câu với liên từ chỉ nguyên nhân: 'Clause (nguyên nhân), so + Clause (kết quả)' = 'Because + Clause (nguyên nhân), Clause (kết quả)'.",
+          step4: "Loại B mắc lỗi thừa liên từ 'so'; loại C ngược nguyên nhân - kết quả; loại D sai chia thì."
+        }
+      },
+      {
+        id: 52,
+        section: "Rewrite the following sentences without changing the meaning",
+        question: "Question 52. Why don't we take up collecting dolls as a new hobby?<br>➔ What about _______?",
+        options: [
+          { letter: "A", text: "taking up collecting dolls as a new hobby" },
+          { letter: "B", text: "take up collecting dolls as a new hobby" },
+          { letter: "C", text: "to take up collecting dolls as a new hobby" },
+          { letter: "D", text: "we take up collecting dolls as a new hobby" }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu gốc: 'Tại sao chúng ta không bắt đầu thu thập búp bê như một sở thích mới nhỉ?'",
+          step2: [
+            "A. taking up collecting dolls as a new hobby (Đúng cấu trúc What about + V-ing).",
+            "B. take up... (Sai vì sau giới từ 'about' phải dùng V-ing, không dùng V-bare).",
+            "C. to take up... (Sai dạng to-V).",
+            "D. we take up... (Sai cấu trúc gợi ý)."
+          ],
+          step3: "Tại sao chọn A? Cấu trúc đưa ra lời đề nghị/rủ rê tương đương: 'Why don't we + V-bare...?' = 'What about + V-ing...?'.",
+          step4: "Loại B, C, D do chia sai dạng động từ theo sau giới từ 'about'."
+        }
+      },
+      {
+        id: 53,
+        section: "Rewrite the following sentences without changing the meaning",
+        question: "Question 53. My little sister enjoys arranging flowers.<br>➔ My little sister's hobby _______.",
+        options: [
+          { letter: "A", text: "is arranging flowers" },
+          { letter: "B", text: "are arranging flowers" },
+          { letter: "C", text: "is arrange flowers" },
+          { letter: "D", text: "enjoys arranging flowers" }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu gốc: 'Em gái tôi rất thích cắm hoa.'",
+          step2: [
+            "A. is arranging flowers (Sở thích của em gái tôi là cắm hoa -> Đúng ngữ pháp).",
+            "B. are arranging... (Sai to-be số nhiều, chủ ngữ 'My little sister's hobby' là danh từ số ít).",
+            "C. ...is arrange... (Sai dạng động từ nguyên thể sau to-be).",
+            "D. ...enjoys arranging... (Cấu trúc lặp từ không logic: 'Sở thích thích cắm hoa')."
+          ],
+          step3: "Tại sao chọn A? Chuyển đổi từ câu dùng động từ chỉ sự yêu thích 'S + enjoy + V-ing' sang danh từ sở thích: 'S's hobby + is + V-ing/N'.",
+          step4: "Loại B sai to-be; loại C sai dạng động từ; loại D bị lặp từ mất nghĩa."
+        }
+      },
+      {
+        id: 54,
+        section: "Rewrite the following sentences without changing the meaning",
+        question: "Question 54. I spent two hours completing my revision sheet for the final exam in literature.<br>➔ It took _______.",
+        options: [
+          { letter: "A", text: "me two hours to complete my revision sheet for the final exam in literature" },
+          { letter: "B", text: "me two hours completing my revision sheet for the final exam in literature" },
+          { letter: "C", text: "two hours for me complete my revision sheet for the final exam in literature" },
+          { letter: "D", text: "I two hours to complete my revision sheet for the final exam in literature" }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu gốc: 'Tôi đã dành 2 tiếng đồng hồ để hoàn thành phiếu ôn tập cho bài thi học kỳ môn Ngữ văn.'",
+          step2: [
+            "A. me two hours to complete my revision sheet for the final exam in literature (Đúng hoàn toàn công thức It took O time to-V).",
+            "B. ...completing... (Sai vì sau 'It took + O + time' phải dùng 'to-V', không dùng 'V-ing').",
+            "C. ...for me complete... (Sai cú pháp).",
+            "D. ...It took I... (Sai tân ngữ, đại từ 'I' phải chuyển thành tân ngữ 'me')."
+          ],
+          step3: "Tại sao chọn A? Công thức chuyển đổi câu chỉ thời gian kinh điển: 'S + spent + time + V-ing' = 'It + took + O (tân ngữ) + time + to-V'.",
+          step4: "Loại B sai dạng V-ing; loại C sai cấu trúc; loại D dùng sai đại từ nhân xưng 'I' làm tân ngữ."
+        }
+      },
+
+      // ----- PART 2: MAKE COMPLETE SENTENCES (Q55 - Q58) -----
+      {
+        id: 55,
+        section: "Make complete sentences using the prompts.",
+        question: "Question 55. Molly/ feel/ tired/ today/ because/ couldn't/ sleep/ last night.<br>➔ _______.",
+        options: [
+          { letter: "A", text: "Molly feels tired today because she couldn't sleep last night." },
+          { letter: "B", text: "Molly felt tired today because she couldn't sleep last night." },
+          { letter: "C", text: "Molly feels tired today because couldn't sleep last night." },
+          { letter: "D", text: "Molly feel tired today because she couldn't sleep last night." }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Molly hôm nay cảm thấy mệt mỏi vì cô ấy không thể ngủ được vào tối qua.'",
+          step2: [
+            "A. Molly feels tired today because she couldn't sleep last night. (Đúng thì và thêm đầy đủ chủ ngữ vế sau).",
+            "B. ...felt tired today... (Dấu hiệu 'today' ở vế đầu diễn tả cảm xúc ở hiện tại nên dùng 'feels').",
+            "C. ...because couldn't... (Thiếu chủ ngữ 'she' sau từ liên kết 'because').",
+            "D. Molly feel... (Chưa chia động từ 'feel' thêm 's' theo chủ ngữ số ít 'Molly')."
+          ],
+          step3: "Tại sao chọn A? Vế đầu có 'today' chia thì Hiện tại đơn ('feels'). Vế sau bổ sung chủ ngữ 'she' + 'couldn't sleep last night' (quá khứ). Cấu trúc: 'feel + adj' (cảm thấy mệt mỏi).",
+          step4: "Loại B sai chia thì vế đầu; loại C thiếu chủ ngữ vế 'because'; loại D chưa chia động từ."
+        }
+      },
+      {
+        id: 56,
+        section: "Make complete sentences using the prompts.",
+        question: "Question 56. Vitamins/ be/ essential/ our/ health.<br>➔ _______.",
+        options: [
+          { letter: "A", text: "Vitamins are essential for our health." },
+          { letter: "B", text: "Vitamins is essential for our health." },
+          { letter: "C", text: "Vitamins are essential to our health." },
+          { letter: "D", text: "Vitamins be essential for our health." }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Các vitamin rất cần thiết cho sức khỏe của chúng ta.'",
+          step2: [
+            "A. Vitamins are essential for our health. (Đúng ngữ pháp cấu trúc be essential for).",
+            "B. ...is essential... (Sai to-be, chủ ngữ số nhiều 'Vitamins' phải đi với 'are').",
+            "C. ...essential to... (Đi với sức khỏe dùng giới từ 'for' phổ biến và chuẩn xác hơn).",
+            "D. ...be essential... (Chưa chia động từ to-be)."
+          ],
+          step3: "Tại sao chọn A? Cụm từ cố định: 'be essential for something/someone' (cần thiết/thiết yếu cho cái gì/ai). 'Vitamins' số nhiều chia to-be 'are'.",
+          step4: "Loại B sai to-be số ít; loại C sai giới từ; loại D chưa chia to-be."
+        }
+      },
+      {
+        id: 57,
+        section: "Make complete sentences using the prompts.",
+        question: "Question 57. What/ your brother/ do / free time /?/<br>➔ _______?",
+        options: [
+          { letter: "A", text: "What does your brother do in his free time?" },
+          { letter: "B", text: "What do your brother do in his free time?" },
+          { letter: "C", text: "What does your brother do in free time?" },
+          { letter: "D", text: "What is your brother do in his free time?" }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Anh/em trai của bạn làm gì vào thời gian rảnh rỗi của anh ấy?'",
+          step2: [
+            "A. What does your brother do in his free time? (Đúng ngữ pháp câu hỏi Hiện tại đơn).",
+            "B. ...do your brother... (Sai trợ động từ, 'your brother' số ít phải mượn 'does').",
+            "C. ...in free time? (Thiếu tính từ sở hữu 'his' trước 'free time').",
+            "D. ...is your brother do... (Dùng sai to-be 'is' thay cho trợ động từ 'does')."
+          ],
+          step3: "Tại sao chọn A? Cấu trúc hỏi hoạt động thời gian rảnh: 'What + does + S(số ít) + do + in + his/her + free time?'. Giới từ đi với free time là 'in'.",
+          step4: "Loại B sai trợ động từ; loại C thiếu tính từ sở hữu 'his'; loại D nhầm to-be."
+        }
+      },
+      {
+        id: 58,
+        section: "Make complete sentences using the prompts.",
+        question: "Question 58. Lily/ enjoy/ play / sports/ because/ it/ good/ health/ . /<br>➔ _______.",
+        options: [
+          { letter: "A", text: "Lily enjoys playing sports because it is good for health." },
+          { letter: "B", text: "Lily enjoy playing sports because it is good for health." },
+          { letter: "C", text: "Lily enjoys to play sports because it is good for health." },
+          { letter: "D", text: "Lily enjoys playing sports because it good for health." }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Lily thích chơi thể thao vì nó tốt cho sức khỏe.'",
+          step2: [
+            "A. Lily enjoys playing sports because it is good for health. (Đúng ngữ pháp).",
+            "B. Lily enjoy... (Chưa chia động từ 'enjoys' thêm 's' theo chủ ngữ số ít 'Lily').",
+            "C. ...enjoys to play... (Sai vì sau 'enjoy' phải dùng V-ing 'playing').",
+            "D. ...because it good... (Thiếu động từ to-be 'is')."
+          ],
+          step3: "Tại sao chọn A? 'Lily' số ít nên động từ 'enjoy' chia thành 'enjoys'. Cấu trúc 'enjoy + V-ing' -> 'playing sports'. Cụm từ cố định 'be good for health' đi với 'it' là 'it is good for health'.",
+          step4: "Loại B chưa chia động từ; loại C sai dạng V-ing; loại D thiếu to-be 'is'."
+        }
+      },
+      {
+        id: 59,
+        section: "Make complete sentences using the prompts.",
+        question: "Question 55 (trùng cuối đề). I/ become/ member/ Green School Club/ three months/.<br>➔ _______.",
+        options: [
+          { letter: "A", text: "I became a member of Green School Club three months ago." },
+          { letter: "B", text: "I have become a member of Green School Club for three months." },
+          { letter: "C", text: "I become a member of Green School Club three months ago." },
+          { letter: "D", text: "I became member of Green School Club for three months." }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Tôi đã trở thành thành viên của CLB Trường Xanh 3 tháng trước.'",
+          step2: [
+            "A. I became a member of Green School Club three months ago. (Đúng thì Quá khứ đơn với 'ago').",
+            "B. ...have become... for... (Mặc dù dùng Hiện tại hoàn thành nhưng phương án A với 'ago' phổ biến và tự nhiên hơn trong đề thi lớp 7).",
+            "C. ...become... (Chưa chia động từ quá khứ 'became').",
+            "D. ...became member... (Thiếu mạo từ 'a' trước 'member')."
+          ],
+          step3: "Tại sao chọn A? Cụm thời gian 'three months ago' (3 tháng trước) chỉ mốc thời gian quá khứ rõ ràng -> Động từ 'become' chia quá khứ đơn là 'became'. Cụm danh từ: 'a member of + tên CLB'.",
+          step4: "Loại C chưa chia quá khứ; loại D thiếu mạo từ 'a'."
+        }
+      }
+    ];
+
+    /* ==========================================
+       2. TẠO ÂM THANH BẰNG WEB AUDIO API
+       ========================================== */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'correct') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(110, audioCtx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+      }
+    }
+
+    /* ==========================================
+       3. HIỆU ỨNG PHÁO GIẤY (CONFETTI)
+       ========================================== */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#8854C0', '#FDCB6E', '#00C9A7', '#FF7675', '#00D26A', '#6C5CE7'];
+
+      for (let i = 0; i < 90; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 9 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speed: Math.random() * 4 + 2,
+          rotation: Math.random() * 360
+        });
+      }
+
+      let animationFrame;
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.y += p.speed;
+          p.rotation += 2;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        if (pieces.some(p => p.y < canvas.height)) {
+          animationFrame = requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+      render();
+    }
+
+    /* ==========================================
+       4. LOGIC HIỂN THỊ CÂU HỎI (GIỮ NGUYÊN THỨ TỰ)
+       ========================================== */
+    let userAnswers = {};
+
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+
+    function renderQuiz() {
+      const quizContainer = document.getElementById('quiz-container');
+      quizContainer.innerHTML = '';
+
+      const sections = {};
+      quizData.forEach(item => {
+        if (!sections[item.section]) {
+          sections[item.section] = [];
+        }
+        sections[item.section].push(item);
+      });
+
+      for (const secTitle in sections) {
+        const secHeader = document.createElement('div');
+        secHeader.className = 'section-heading';
+        secHeader.innerHTML = `📌 ${secTitle}`;
+        quizContainer.appendChild(secHeader);
+
+        // GIỮ NGUYÊN THỨ TỰ TỪ CÂU 50 ĐẾN CÂU 58
+        sections[secTitle].forEach(q => {
+          const card = document.createElement('div');
+          card.className = 'question-card';
+          card.id = `q-card-${q.id}`;
+
+          const shuffledOptions = shuffle([...q.options]);
+
+          let optionsHTML = '<div class="options-grid">';
+          shuffledOptions.forEach(opt => {
+            optionsHTML += `
+              <button class="option-btn" 
+                      id="btn-${q.id}-${opt.letter}" 
+                      onclick="selectAnswer(${q.id}, '${opt.letter}', '${q.correct}')">
+                <strong>${opt.letter}.</strong> ${opt.text}
+              </button>
+            `;
+          });
+          optionsHTML += '</div>';
+
+          let expStepsHTML = '';
+          if (q.explanation.step2 && Array.isArray(q.explanation.step2)) {
+            expStepsHTML = '<ul>' + q.explanation.step2.map(item => `<li>${item}</li>`).join('') + '</ul>';
+          }
+
+          const explanationHTML = `
+            <div class="explanation-box" id="exp-${q.id}">
+              <div class="exp-title">💡 PHẦN GIẢI THÍCH CHI TIẾT TỪ MS LÊ HẰNG:</div>
+              <div class="step"><strong>1. Phân tích & Dịch nghĩa câu hỏi:</strong> ${q.explanation.step1}</div>
+              ${expStepsHTML}
+              <div class="step"><strong class="highlight-green">2. Tại sao chọn đáp án đúng?</strong> ${q.explanation.step3}</div>
+              <div class="step"><strong>3. Phân tích lỗi sai các đáp án còn lại:</strong> ${q.explanation.step4}</div>
+            </div>
+          `;
+
+          card.innerHTML = `
+            <div class="question-title">${q.question}</div>
+            ${optionsHTML}
+            ${explanationHTML}
+          `;
+
+          quizContainer.appendChild(card);
+        });
+      }
+    }
+
+    function selectAnswer(qId, selectedLetter, correctLetter) {
+      if (userAnswers[qId]) return;
+
+      userAnswers[qId] = selectedLetter;
+
+      const isCorrect = (selectedLetter === correctLetter);
+      const selectedBtn = document.getElementById(`btn-${qId}-${selectedLetter}`);
+      const correctBtn = document.getElementById(`btn-${qId}-${correctLetter}`);
+      const expBox = document.getElementById(`exp-${qId}`);
+
+      const allBtns = document.querySelectorAll(`#q-card-${qId} .option-btn`);
+      allBtns.forEach(btn => btn.classList.add('disabled'));
+
+      if (isCorrect) {
+        selectedBtn.classList.add('correct');
+        playSound('correct');
+        triggerConfetti();
+      } else {
+        selectedBtn.classList.add('wrong');
+        correctBtn.classList.add('correct');
+        playSound('wrong');
+      }
+
+      if (expBox) {
+        expBox.style.display = 'block';
+      }
+
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const answeredCount = Object.keys(userAnswers).length;
+      const totalCount = quizData.length;
+      const percentage = (answeredCount / totalCount) * 100;
+      document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+
+    /* ==========================================
+       5. LOGIC CHẤM ĐIỂM & TỔNG KẾT
+       ========================================== */
+    function submitQuiz() {
+      let score = 0;
+      const total = quizData.length;
+
+      quizData.forEach(q => {
+        if (userAnswers[q.id] === q.correct) {
+          score++;
+        }
+      });
+
+      const percentage = (score / total) * 100;
+      let feedback = "";
+
+      if (percentage < 50) {
+        feedback = "Điểm lần này chưa cao lắm, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+      } else if (percentage <= 80) {
+        feedback = "Con đã có tiến bộ khá ổn rồi, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+      } else {
+        feedback = "Làm tốt lắm, con cố gắng ring điểm 10 ở lần sau nha!";
+        triggerConfetti();
+      }
+
+      document.getElementById('modal-score-text').innerText = `${score} / ${total}`;
+      document.getElementById('modal-feedback-text').innerText = feedback;
+      document.getElementById('result-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('result-modal').style.display = 'none';
+    }
+
+    window.onload = function() {
+      renderQuiz();
+    };
+  </script>
+</body>
+</html>
